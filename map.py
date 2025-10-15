@@ -14,21 +14,21 @@ map = [
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ]
 
+        
+
 class Map:
     #constuctor below (this runs automatically)
     def __init__(self, game):
         self.game = game
         self.map = map
-        self.walls = {} #creating an empty dictionary.
         self.get_map()
 
    
     def get_map(self):
-       
-        pass
+      pass
+        
     def draw(self):
-        pass
-
+      pass
         
 
        
