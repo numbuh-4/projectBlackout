@@ -1,30 +1,81 @@
+import pygame
+import math
+from settings import *
 
-# import pygame
-# from settings import *
+class Player:
+    def __init__(self, game):
+        self.game = game
+        self.x, self.y = PLAYER_POS
+        self.angle = PLAYER_ANGLE
+        self.soldier = pygame.image.load("soldier.png")        
+    def movement(self):
+        
+        #Calculates the sine and cosine of the player's angle to move in the direction they’re facing.
+        sin_a = math.sin(self.angle)
+        cos_a = math.cos(self.angle)
+        dx, dy = 0, 0
+        
+        speed = PLAYER_SPEED * self.game.delta_time
+        speed_sin = speed * sin_a
+        speed_cos = speed * cos_a
+        
+        key = pygame.key.get_pressed()
+        
+        if key[pygame.K_w]:
+            dx += speed_cos
+            dy += speed_sin
+        if key[pygame.K_s]:
+            dx += -speed_cos
+            dy += -speed_sin
+        if key[pygame.K_a]:
+            dx += speed_sin
+            dy += -speed_cos
+        if key[pygame.K_d]:
+            dx += -speed_sin
+            dy += speed_cos
+        
+        self.check_walls_collisions(dx, dy)
 
-# # pygame.sprite.Sprite = a base class in Pygame for creating visible, movable game objects
-# class Player(pygame.sprite.Sprite):
-#     def __init__(self, game,x,y):
-#         self.game =game
-#         self._layer = PLAYER_LAYER
-#         self.groups = self.game.all_sprites
-#         pygame.sprite.Sprite.__init__(self, self.groups)
-
-#         self.x = x * TILESIZE
-#         self.y = y * TILESIZE
-#         self.width = TILESIZE
-#         self.height = TILESIZE
-
-
-#         #this is how it looks like
-#         self.image = pygame.Surface([self.width, self.height])
-#         self.image.fill(COLOR)
-
-#         #where its positioned and its size
-#         self.rect = self.image.get_rect()
-#         self.rect.x = self.x
-#         self.rect.y = self.y
+        if pygame.key.get_pressed()[pygame.K_LEFT]:
+            self.angle -= PLAYER_ROT_SPEED * self.game.delta_time
+        if pygame.key.get_pressed()[pygame.K_RIGHT]:
+            self.angle += PLAYER_ROT_SPEED * self.game.delta_time
+        self.angle %= math.tau
+        
+    def check_walls(self, x, y):
+        COLLISION_SIZE = 40
+        COLLISION_OFFSET = COLLISION_SIZE // 2
+        
+        # Create player rect in tile space, then convert to pixel space for collision
+        player_rect = pygame.Rect(
+            int(x * TILESIZE - COLLISION_OFFSET), 
+            int(y * TILESIZE - COLLISION_OFFSET), 
+            COLLISION_SIZE, 
+            COLLISION_SIZE
+        )
+        
+        # we have to Check collision against all walls !!!HOW THE FUCK DO WE DO THAT!!!!!!!!!!!!!!!!!!!!!!!
+        for wall_rect in self.game.map.BLOCKS_1:
+            if player_rect.colliderect(wall_rect):
+                return False
+        
+        return True
     
+    def check_walls_collisions(self, dx, dy):
+        if self.check_walls(self.x + dx, self.y):  # safe to move left and right
+            self.x += dx
+        if self.check_walls(self.x, self.y + dy):  # safe to move up and down
+            self.y += dy
+    
+    def draw(self):
 
-#     def update(self):
-#         pass
+        pygame.draw.circle(self.game.screen, COLOR, (self.x * TILESIZE, self.y * TILESIZE), 20)
+        line_end_x = self.x * TILESIZE + math.cos(self.angle) * 50
+        line_end_y = self.y * TILESIZE + math.sin(self.angle) * 50
+        # pygame.draw.line(self.game.screen, COLOR, (self.x * TILESIZE, self.y * TILESIZE), (line_end_x, line_end_y), 2)
+    def update(self):
+        self.movement()
+
+
+
+
