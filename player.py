@@ -5,17 +5,20 @@ from settings import *
 class Player:
     def __init__(self, game):
         self.game = game
-        self.x, self.y = PLAYER_POS
-        self.angle = PLAYER_ANGLE
-        self.soldier = pygame.image.load("soldier.png")        
-    def movement(self):
+        self.x, self.y = PLAYER_POS[0] * TILESIZE, PLAYER_POS[1] * TILESIZE #coverts the player position from tile coordinates to pixel coordniates
+        self.angle = PLAYER_ANGLE #0
+        self.turnDirection = 0
+        self.walkDirection = 0
+        self.rotationAngle = 0
         
-        #Calculates the sine and cosine of the player's angle to move in the direction they’re facing.
+
+    def movement(self):
+        # Calculates the sine and cosine of the player's angle to move in the direction they’re facing.
         sin_a = math.sin(self.angle)
         cos_a = math.cos(self.angle)
         dx, dy = 0, 0
         
-        speed = PLAYER_SPEED * self.game.delta_time
+        speed = PLAYER_SPEED * self.game.delta_time #delta time is 1
         speed_sin = speed * sin_a
         speed_cos = speed * cos_a
         
@@ -42,14 +45,15 @@ class Player:
             self.angle += PLAYER_ROT_SPEED * self.game.delta_time
         self.angle %= math.tau
         
+        
     def check_walls(self, x, y):
         COLLISION_SIZE = 40
         COLLISION_OFFSET = COLLISION_SIZE // 2
         
         # Create player rect in tile space, then convert to pixel space for collision
         player_rect = pygame.Rect(
-            int(x * TILESIZE - COLLISION_OFFSET), 
-            int(y * TILESIZE - COLLISION_OFFSET), 
+            int(x - COLLISION_OFFSET), 
+            int(y - COLLISION_OFFSET), 
             COLLISION_SIZE, 
             COLLISION_SIZE
         )
@@ -69,10 +73,11 @@ class Player:
     
     def draw(self):
 
-        pygame.draw.circle(self.game.screen, COLOR, (self.x * TILESIZE, self.y * TILESIZE), 20)
-        line_end_x = self.x * TILESIZE + math.cos(self.angle) * 50
-        line_end_y = self.y * TILESIZE + math.sin(self.angle) * 50
-        # pygame.draw.line(self.game.screen, COLOR, (self.x * TILESIZE, self.y * TILESIZE), (line_end_x, line_end_y), 2)
+        # pygame.draw.circle(self.game.screen, COLOR, (int(self.x), int(self.y)), 20)
+        line_end_x = self.x + math.cos(self.angle) * 50
+        line_end_y = self.y + math.sin(self.angle) * 50
+        # pygame.draw.line(self.game.screen, COLOR, (self.x, self.y), (line_end_x, line_end_y), 2)
+
     def update(self):
         self.movement()
 

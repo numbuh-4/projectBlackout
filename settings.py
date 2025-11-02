@@ -13,12 +13,16 @@ BLUE = (0,0 ,255)
 
 PLAYER_POS = 1.2, 5
 PLAYER_ANGLE = 0
-PLAYER_SPEED = 0.004
+PLAYER_SPEED = 0.25
 PLAYER_ROT_SPEED = 0.002
 
-FOV = math.pi /3
-HALF_FOV = FOV / 2
-NUM_RAYS = RES_WIDTH // 2
-HALF_NUM_RAYS = NUM_RAYS // 2
-DELTA_ANGLE = FOV / NUM_RAYS
-MAX_DEPTH =20
+FOV = 60  * (math.pi /180) #answer is 1 but in radians its in 60
+
+RES = 3 #the width of each rectangle getting drawn on to the screen
+NUM_RAYS = RES_WIDTH // RES #320
+
+#3D Projection
+WALL_HEIGHT = 80 #same as tile tilesize btw
+WALL_COLOR = 255
+TEXTURE_SIZE = 64
+DISTANCE_FROM_PLAYER_TO_PROJECTED_SCREEN = 1108 #half of RES_WIDTH / tan(FOV/2)

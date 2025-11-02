@@ -3,13 +3,15 @@ from settings import *
 from player import *
 import sys
 from map import *
-from raycasting import *
+from raycasting import *    
 # variables from one method can be accessed and used in other methods within the same class in Python
 
 class Game:
     #automatically called
     def __init__(self):
         pygame.init()
+        self.wall_texture = pygame.image.load("resources/textures/sprites/bricks.png")
+
         self.screen = pygame.display.set_mode((RES_WIDTH, RES_HEIGHT))
         self.clock = pygame.time.Clock()
         self.delta_time = 1
@@ -21,11 +23,13 @@ class Game:
         self.playing = True
         self.map = Map(self)
         self.player = Player(self)
-        self.rayCasting = RayCasting(self, self.player)
+        self.rayCasting = RayCasting(self.player, self.map)
+        
     def draw(self):
         self.screen.fill((0, 0, 0))  
         self.map.draw() #this draws the map on the screen
         self.player.draw()
+        self.rayCasting.render(self.screen)
         pygame.display.update()
     def events(self):
         for event in pygame.event.get(): #get events from the queue
@@ -35,7 +39,7 @@ class Game:
 
     def update(self):
         self.player.update()
-        self.rayCasting.update()
+        self.rayCasting.castAllRays()
         self.delta_time = self.clock.tick(FPS)
     def main(self):
         #game loop
