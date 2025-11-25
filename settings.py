@@ -1,8 +1,9 @@
 import math
-
+import pygame
 RES_WIDTH = 1280 #1600
 RES_HEIGHT = 720 #900
-
+pygame.init()
+FONT = pygame.font.SysFont("Arial", 34)
 FPS = 60
 TILESIZE = 80
 PLAYER_LAYER = 1
@@ -26,3 +27,6 @@ WALL_HEIGHT = 80 #same as tile tilesize btw
 WALL_COLOR = 255
 TEXTURE_SIZE = 64
 DISTANCE_FROM_PLAYER_TO_PROJECTED_SCREEN = 1108 #half of RES_WIDTH / tan(FOV/2)
+
+DATABASE_PASSWORD = 'Waterbottle321$'
+DATABASE_USER = 'root'

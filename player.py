@@ -1,21 +1,19 @@
 import pygame
 import math
 from settings import *
-
+from weapon import *
 class Player:
     def __init__(self, game):
         self.game = game
         self.x, self.y = PLAYER_POS[0] * TILESIZE, PLAYER_POS[1] * TILESIZE #coverts the player position from tile coordinates to pixel coordniates
         self.angle = PLAYER_ANGLE #0
-        self.turnDirection = 0
-        self.walkDirection = 0
         self.rotationAngle = 0
-        
 
     def movement(self):
         # Calculates the sine and cosine of the player's angle to move in the direction they’re facing.
-        sin_a = math.sin(self.angle)
         cos_a = math.cos(self.angle)
+
+        sin_a = math.sin(self.angle)
         dx, dy = 0, 0
         
         speed = PLAYER_SPEED * self.game.delta_time #delta time is 1
@@ -37,12 +35,16 @@ class Player:
             dx += -speed_sin
             dy += speed_cos
         
+                  
         self.check_walls_collisions(dx, dy)
 
-        if pygame.key.get_pressed()[pygame.K_LEFT]:
+        if pygame.key.get_pressed()[pygame.K_LEFT]:# ←
             self.angle -= PLAYER_ROT_SPEED * self.game.delta_time
-        if pygame.key.get_pressed()[pygame.K_RIGHT]:
+        if pygame.key.get_pressed()[pygame.K_RIGHT]:# →
             self.angle += PLAYER_ROT_SPEED * self.game.delta_time
+           
+        #ensures it always stays within 1 rotation (no negatives)
+        #we get the remaindar and store it back to self.angle
         self.angle %= math.tau
         
         
@@ -51,12 +53,7 @@ class Player:
         COLLISION_OFFSET = COLLISION_SIZE // 2
         
         # Create player rect in tile space, then convert to pixel space for collision
-        player_rect = pygame.Rect(
-            int(x - COLLISION_OFFSET), 
-            int(y - COLLISION_OFFSET), 
-            COLLISION_SIZE, 
-            COLLISION_SIZE
-        )
+        player_rect = pygame.Rect(int(x - COLLISION_OFFSET), int(y - COLLISION_OFFSET), COLLISION_SIZE, COLLISION_SIZE)
         
         # we have to Check collision against all walls !!!HOW THE FUCK DO WE DO THAT!!!!!!!!!!!!!!!!!!!!!!!
         for wall_rect in self.game.map.BLOCKS_1:
@@ -73,10 +70,11 @@ class Player:
     
     def draw(self):
 
-        # pygame.draw.circle(self.game.screen, COLOR, (int(self.x), int(self.y)), 20)
-        line_end_x = self.x + math.cos(self.angle) * 50
-        line_end_y = self.y + math.sin(self.angle) * 50
-        # pygame.draw.line(self.game.screen, COLOR, (self.x, self.y), (line_end_x, line_end_y), 2)
+        pygame.draw.circle(self.game.screen, COLOR, (int(self.x), int(self.y)), 20)
+        # line_end_x = self.x + math.cos(self.angle) * 50
+        # line_end_y = self.y + math.sin(self.angle) * 50
+        self.direction = (self.x + math.cos(self.angle)*50, self.y + math.sin(self.angle) *50)
+        pygame.draw.line(self.game.screen, COLOR, (self.x, self.y), self.direction, 2)
 
     def update(self):
         self.movement()

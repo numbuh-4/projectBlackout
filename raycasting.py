@@ -31,7 +31,8 @@ class RayCasting:
         for ray in self.rays:
             projected_line_height = (WALL_HEIGHT/ ray.distance) *  554 
             draw_begin = (RES_HEIGHT / 2) - (projected_line_height / 2) 
-            height = projected_line_height 
+            height = projected_line_height
+             
             # slice = pygame.Rect(wall_counter * RES, draw_begin, RES, height)
             texture_x = ray.offset * texture_width
             wall_column = self.wall_texture.subsurface(texture_x, 0, 1, texture_height)

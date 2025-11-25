@@ -110,6 +110,7 @@ class Ray:
 
         # while it is inside the window
         while (nextVerticalX <= RES_WIDTH and nextVerticalX >= 0 and nextVerticalY <= RES_HEIGHT and nextVerticalY >= 0):
+            
             if self.map.has_wall_at(nextVerticalX, nextVerticalY):
                 found_vertical_wall = True
                 vertical_hit_x = nextVerticalX
@@ -158,16 +159,9 @@ class Ray:
         
         
         
-        
+        #this is for the texture on the walls
         if self.hit_vertical:
             self.offset = (self.wall_hit_y % TILESIZE) / TILESIZE
         else:
             self.offset = (self.wall_hit_x % TILESIZE) / TILESIZE
-    def render(self, screen):
-        pass
-        # #TEMP
-        # # pygame.draw.line(screen, (255, 0,0), (self.player.x, self.player.y), (self.player.x + math.cos(self.rayAngle) * TILESIZE, 
-        # # self.player.y + math.sin(self.rayAngle) * TILESIZE))
-        # # pygame.draw.line(screen, (255, 0, 0), (self.player.x, self.player.y), (self.wall_hit_x, self.wall_hit_y))
-        # print("the x coordniate wall hit " + str(self.wall_hit_x))
-        # print("the y coordniate wall hit " + str(self.wall_hit_y))
+    
