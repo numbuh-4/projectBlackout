@@ -1,10 +1,12 @@
 import pygame
-from player import *
+from player.player import *
 from settings import *
 import math
+# my_bullet.py
+
 class Bullet:
     def __init__(self, player):
-        self.imageBullet = pygame.image.load("resources/light_bullet.png").convert_alpha()
+        
         self.x = player.x
         self.y = player.y
         
@@ -12,14 +14,14 @@ class Bullet:
         self.dy = math.sin(player.angle)
         
         self.speed = 10  
-        self.bullet_hitbox = self.imageBullet.get_rect(center=(self.x,self.y))
-        
+        self.bullet_hitbox = pygame.Rect(self.x - 2, self.y - 2, 4, 4)
     
     def update(self):
-        self.x = self.x + (self.dx * self.speed)
-        self.y = self.y + (self.dy * self.speed)
+        self.x += self.dx * self.speed
+        self.y += self.dy * self.speed
+
 
         self.bullet_hitbox.center = (self.x, self.y)
 
     def draw(self, screen):
-        screen.blit(self.imageBullet, self.bullet_hitbox)
+        pygame.draw.rect(screen, (255,255,0), self.bullet_hitbox)

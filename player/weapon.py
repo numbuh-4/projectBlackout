@@ -1,11 +1,12 @@
 import pygame
 from settings import *
-from bullet import *
-from bullet_Manager import *
+from player.my_bullet import *
+from player.bullet_Manager import *
 class Weapon:
-    def __init__(self,player,enemy):
+    def __init__(self,player,roundSystem, bullet_Manager):
         self.player = player
-        self.enemy = enemy
+        self.roundSystem = roundSystem
+        self.bullet_Manager = bullet_Manager
         screen_center_x = RES_WIDTH // 2
         screen_center_y = (RES_HEIGHT // 2) + 157 
         new_width = 400
@@ -44,31 +45,23 @@ class Weapon:
         self.animation = True
 
     
-    def damage(self,bullet_Manager,enemy):
-        self.bullet_Manager = bullet_Manager
-        self.enemy = enemy
-        enemy_health = 10
-        self.hit = False
+    def damage(self):
+        
         self.hit_sound = pygame.mixer.Sound('resources/sound_effects/hitmarker_2.mp3')
-
-        # if self.bullet x and y coordniates collides with the hitbox of the enemy print(hit)
         
-        for bullet in self.bullet_Manager.bullets:
-            if bullet.bullet_hitbox.colliderect(self.enemy.hitbox):
-                print("hit")
-                self.hit_sound.play()
+        for enemy in self.roundSystem.enemies:
+            if enemy.dead:
+                continue
+            for bullet in self.bullet_Manager.bullets:
+                if bullet.bullet_hitbox.colliderect(enemy.world_hitbox):
+                    self.hit_sound.play()
+                    print("hit")
+                    enemy.color = (0,255,0) 
+                    enemy.enemy_health()
+                    self.bullet_Manager.bullets.remove(bullet)
+                    
+                    break
 
-                self.hit = True
-            else:
-                self.hit= False
-
-        
-    
-    
-    
-    
-    
-    
     def render(self, screen):
         screen.blit(self.scaled_images[int(self.current_gun_image)], self.rect)
         

@@ -4,7 +4,8 @@ import random
 from settings import *
 from map import tile_map
 from map import Map
-
+from enemy.enemyBM import EnemyBM
+from enemy.enemy_bullet import Enemybullet
 
 def random_enemy_spawn():
     while True:
@@ -16,19 +17,30 @@ def random_enemy_spawn():
             y = tile_y * TILESIZE
             return x, y
 class Enemy:
-    def __init__(self, player,game):
+    def __init__(self, player,game,enemyBM):
         self.player = player
         self.game = game
         self.distance = 0
         self.angle = 0
         self.visible = False
+        self.dead = False
         self.map = Map(self.game)
         self.image = pygame.image.load("resources/textures/sprites/soldier/soldier-removebg-preview.png").convert_alpha()
         self.enemy_x_position, self.enemy_y_position = random_enemy_spawn()
-        self.elimnated = False
+        self.color = (255,0,0)
+        self.hp = 50
+        self.shoot_cooldown = 0
+        self.enemybulletManager = enemyBM
         
-    def project(self):
+        self.hitbox_size = 40
+        self.world_hitbox = pygame.Rect(self.enemy_x_position,self.enemy_y_position,self.hitbox_size,self.hitbox_size,)
+        self.world_hitbox.x = 0
+        self.world_hitbox.y = 0
+        self.points_given = False
 
+    def project(self):
+        if self.dead == True:
+            return
         #this shit is in vectors, we have to break this into components so we can find the distance(hypotnuse)↓↓↓↓↓↓↓
         dx = self.enemy_x_position - self.player.x
         dy = self.enemy_y_position - self.player.y
@@ -62,7 +74,8 @@ class Enemy:
         #This line puts the enemy vertically centered on the screen based on how tall the value is
         floor_offset = 20
         screen_y = (RES_HEIGHT / 2) - enemy_height / 2 + floor_offset
-
+        
+        #SAVE THE CALUCLATED RESULTS KEVIN!!! so i Can use them later
         self.visible = True
         self.projected_width = enemy_width
         self.projected_height = enemy_height
@@ -70,8 +83,13 @@ class Enemy:
         self.screen_y = screen_y +10
         
         
-        self.hitbox = pygame.Rect(int(self.screen_x),int(self.screen_y ),int(self.projected_width ),int(self.projected_height))
-
+        
+    def update_hitbox(self):
+        if self.dead == True:
+            return
+        self.world_hitbox.x = self.enemy_x_position - self.hitbox_size//2
+        self.world_hitbox.y = self.enemy_y_position - self.hitbox_size//2
+    
 #/////////////////////////////////////////////////////////////////////////////////////////////////////////        
     def line_of_sight(self):
         enemy_pos = (self.enemy_x_position, self.enemy_y_position)
@@ -82,21 +100,30 @@ class Enemy:
                 return
             
     def move_towards_player(self):
+        if self.dead == True:
+            return
+        
         dx = self.player.x - self.enemy_x_position
         dy = self.player.y - self.enemy_y_position
 
         distance = math.sqrt(dx**2 + dy**2)
 
        
-        if distance <= 200: 
+        if self.distance <= 200: 
+            self.deal_damage()
+            self.player.player_hp()
             return
         # we have to divide it by distance to basically make it close to 1 (normalizing the vector)
         direction_x = dx / distance
         direction_y = dy / distance
+        
+        self.angle = math.atan2(direction_y, direction_x) 
+
+        
         speed = 3
         
-        new_x = self.enemy_x_position + direction_x * speed
-        new_y = self.enemy_y_position + direction_y * speed
+        new_x = self.enemy_x_position + direction_x * speed 
+        new_y = self.enemy_y_position + direction_y * speed 
         
         
         
@@ -107,24 +134,75 @@ class Enemy:
              self.enemy_y_position = new_y
              
 #/////////////////////////////////////////////////////////////////////////////////////////////////////////           
-             
+    def enemy_health(self):
+        if self.dead == True:
+            return
+        self.hp -=10
+
+        # if self.hp != 0:
+        #     self.hp -=10
+        #     # print("the enemy hp is now"+ str(self.hp))
+        # else:
+        #     print("he is dead")
+        #     self.dead = True
+        if self.hp <= 0:
+            self.dead = True
+            print("he is dead")
+
+
+                   
     def deal_damage(self):
-        pass        
-             
-             
-             
-             
-             
+        if self.shoot_cooldown > 0:
+            self.shoot_cooldown -= 1
+            return
+        
+        dx = self.player.x - self.enemy_x_position
+        dy = self.player.y - self.enemy_y_position
+        distance = math.sqrt(dx**2 + dy**2)
+
+        direction_x = dx / distance
+        direction_y = dy / distance
+        
+        angle = math.atan2(direction_y, direction_x) 
+        
+        
+        #then i have to create a bullet
+        self.create_bullet(angle)
+        self.shoot_cooldown = 40
+        
+        
+    def create_bullet(self,angle):
+        bullet = Enemybullet(self)
+        bullet.dx = math.cos(angle)
+        bullet.dy = math.sin(angle)
+        
+        self.enemybulletManager.add_bullet(bullet)
+    def update_enemy_bullet(self):
+        self.enemybulletManager.update()
+    def draw_enemy_bullet(self,screen):
+        self.enemybulletManager.draw(screen)
+    
              
     def draw(self, screen):
-        # if self.visible == False:
-        #     return
+        if self.visible == False:
+            return
 
-        # scaled_sprite = pygame.transform.scale(self.image, (int(self.projected_width), int(self.projected_height)))
+        scaled_sprite = pygame.transform.scale(self.image, (int(self.projected_width), int(self.projected_height)))
 
-        # screen.blit(scaled_sprite, (self.screen_x, self.screen_y))
-        pygame.draw.circle(screen,COLOR, (self.enemy_x_position,self.enemy_y_position),20)
+        screen.blit(scaled_sprite, (self.screen_x, self.screen_y))
+        
+        
+        # rect_size = 40
+        
+        # self.enemy_rect = pygame.Rect(self.enemy_x_position- rect_size // 2, self.enemy_y_position- rect_size //2, rect_size,rect_size)
+        # pygame.draw.rect(screen,self.color, self.enemy_rect)
+        # self.direction = (self.enemy_x_position + math.cos(self.angle)*50, self.enemy_y_position + math.sin(self.angle) *50)
+
+        # pygame.draw.line(self.game.screen, self.color, (self.enemy_x_position, self.enemy_y_position), self.direction, 2)
+
     def render(self, screen):
+        if self.dead == True:
+            return
         self.project()         
         self.line_of_sight()
         self.draw(screen)

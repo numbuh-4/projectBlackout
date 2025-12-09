@@ -25,6 +25,7 @@ class RayCasting:
 
         texture_width = self.wall_texture.get_width() #256
         texture_height = self.wall_texture.get_height() #256
+        #this draws the floor 
         pygame.draw.rect(screen, (50, 50, 50), (0, RES_HEIGHT // 2, RES_WIDTH, RES_HEIGHT // 2))
 
 
@@ -34,12 +35,18 @@ class RayCasting:
             height = projected_line_height
              
             # slice = pygame.Rect(wall_counter * RES, draw_begin, RES, height)
+            
             texture_x = ray.offset * texture_width
+            #figure out where on the wall texture image to start scalling
+            #ray.offet is only a number between 0 - 1 multiplying it by texture_width gives us the exact pixel giving us the column
             wall_column = self.wall_texture.subsurface(texture_x, 0, 1, texture_height)
+            # this grabs one slice of the picture of the texture 
             scaled_column = pygame.transform.scale(wall_column, (RES, int(height)))
-        
-            screen.blit(scaled_column, (wall_counter * RES, draw_begin))
-            # pygame.draw.rect(screen,(WALL_COLOR, WALL_COLOR, WALL_COLOR), slice)
+            # then stretch that slice to the final size needed acording to our screen dimensions
+            x_coord = wall_counter * RES
+            y_coord = draw_begin
+            screen.blit(scaled_column, (x_coord, y_coord))
+            #moves the drawing position over by 3 pixels(RES) to prepare for the next ray slice
             wall_counter += 1   
 
     

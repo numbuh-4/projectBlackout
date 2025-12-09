@@ -20,7 +20,7 @@ PLAYER_ROT_SPEED = 0.002
 FOV = 60  * (math.pi /180) #answer is 1 but in radians its in 60
 
 RES = 3 #the width of each rectangle getting drawn on to the screen
-NUM_RAYS = RES_WIDTH // RES #320
+NUM_RAYS = RES_WIDTH // RES #426
 
 #3D Projection
 WALL_HEIGHT = 80 #same as tile tilesize btw

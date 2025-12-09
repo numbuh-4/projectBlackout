@@ -25,19 +25,12 @@ class Ray:
         self.is_facing_right = self.rayAngle < math.pi/2  or self.rayAngle > (3* math.pi)/2
         self.is_facing_left = not self.is_facing_right
         self.hit_vertical = False   # True if the ray hit a vertical wall
-
         
         #These will store the exact coordinates of where the ray hits a wall.
         self.wall_hit_x = 0
         self.wall_hit_y = 0
-
-        
-        
         self.distance = 0
         
-        
-
-
     def cast(self):
         found_horizontal_wall = False
         horizontal_hit_x = 0
@@ -76,13 +69,10 @@ class Ray:
             else:
                 nextHorizontalX += xa
                 nextHorizontalY += ya
-        #Test the horizonatal lines on the grid for detection if there is a wall there or not
       
+        #//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
-        
-        
-        
-        
+
         #vertical checking(starts below)
         found_vertical_wall = False
         vertical_hit_x = 0
@@ -108,7 +98,7 @@ class Ray:
         
         ya = xa * math.tan(self.rayAngle)
 
-        # while it is inside the window
+        # this loop continues only as long as the ray's current position is inside the boundaries of the game screen    
         while (nextVerticalX <= RES_WIDTH and nextVerticalX >= 0 and nextVerticalY <= RES_HEIGHT and nextVerticalY >= 0):
             
             if self.map.has_wall_at(nextVerticalX, nextVerticalY):
@@ -120,12 +110,7 @@ class Ray:
                 nextVerticalX += xa
                 nextVerticalY += ya
         
-        
-        
-        
-        
-        
-        
+        #/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         #DISTANCE CALCULATION
         horizontal_distance = 0
         vertical_distance = 0

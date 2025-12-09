@@ -1,14 +1,23 @@
 import pygame
 import math
 from settings import *
-from weapon import *
+from player.weapon import *
+from enemy.enemyBM import *
 class Player:
-    def __init__(self, game):
+    def __init__(self, game, enemyBM, health):
         self.game = game
+        self.enemybulletManager = enemyBM
         self.x, self.y = PLAYER_POS[0] * TILESIZE, PLAYER_POS[1] * TILESIZE #coverts the player position from tile coordinates to pixel coordniates
         self.angle = PLAYER_ANGLE #0
         self.rotationAngle = 0
+        self.hitbox_size = 40
 
+        self.player_hitbox = pygame.Rect(self.x,
+                                        self.y,
+                                        self.hitbox_size,
+                                        self.hitbox_size,
+        )
+        self.health = health
     def movement(self):
         # Calculates the sine and cosine of the player's angle to move in the direction they’re facing.
         cos_a = math.cos(self.angle)
@@ -16,7 +25,7 @@ class Player:
         sin_a = math.sin(self.angle)
         dx, dy = 0, 0
         
-        speed = PLAYER_SPEED * self.game.delta_time #delta time is 1
+        speed = PLAYER_SPEED * self.game.delta_time
         speed_sin = speed * sin_a
         speed_cos = speed * cos_a
         
@@ -47,7 +56,6 @@ class Player:
         #we get the remaindar and store it back to self.angle
         self.angle %= math.tau
         
-        
     def check_walls(self, x, y):
         COLLISION_SIZE = 40
         COLLISION_OFFSET = COLLISION_SIZE // 2
@@ -75,7 +83,22 @@ class Player:
         # line_end_y = self.y + math.sin(self.angle) * 50
         self.direction = (self.x + math.cos(self.angle)*50, self.y + math.sin(self.angle) *50)
         pygame.draw.line(self.game.screen, COLOR, (self.x, self.y), self.direction, 2)
-
+        pygame.draw.rect(self.game.screen, (255, 0, 0), self.player_hitbox, 2)
+        
+        
+        
+    def player_hp(self):
+        for bullet in self.enemybulletManager.bullets:
+            if bullet.bullet_hitbox.colliderect(self.player_hitbox):
+                # print("hit")
+                self.health.damage_taken()
+                self.enemybulletManager.bullets.remove(bullet)
+                
+                
+                
+    def player_update_hitbox(self):
+        self.player_hitbox.x = self.x - self.hitbox_size//2
+        self.player_hitbox.y = self.y - self.hitbox_size//2
     def update(self):
         self.movement()
 

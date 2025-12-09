@@ -1,5 +1,5 @@
 import pygame
-from bullet import Bullet
+from player.my_bullet import *
 
 
 class BulletManager:
@@ -11,7 +11,7 @@ class BulletManager:
         if self.track == True:
             self.bullets.append(bullet)
             self.counter += 1
-        print("this is bullet " + str(self.counter))
+        # print("this is bullet " + str(self.counter))
     def update(self):
         for bullet in self.bullets:
             bullet.update()
