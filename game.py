@@ -52,10 +52,9 @@ class Game:
     
     def draw(self):
         self.screen.fill((0, 0, 0))  
-        # self.map.create_blocks() #this draws the map on the screen
-        # self.player.draw()
-        self.rayCasting.render(self.screen) 
-        # self.map.draw()
+        self.player.draw()
+        # self.rayCasting.render(self.screen) 
+        self.map.draw()
 #HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD
 
         self.weapon.render(self.screen)
@@ -92,7 +91,7 @@ class Game:
 
 
     def update(self):
-
+        # print(self.map.BLOCKS_1)
         self.player.update()
         self.rayCasting.castAllRays()
         self.delta_time = self.clock.tick(FPS) 
@@ -136,8 +135,8 @@ class Game:
         if self.game_over_screen_active:
             final_score = self.roundSystem.score
             round_died_on = self.roundSystem.round
-            result = "dead"
-            return result, final_score,round_died_on
+            
+            return "dead", final_score,round_died_on
         
         return "quit", 0, 0
             

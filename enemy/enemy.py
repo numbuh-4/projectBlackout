@@ -132,7 +132,7 @@ class Enemy:
 
         if self.map.has_wall_at(self.enemy_x_position, new_y) == 0:
              self.enemy_y_position = new_y
-             
+      
 #/////////////////////////////////////////////////////////////////////////////////////////////////////////           
     def enemy_health(self):
         if self.dead == True:
@@ -182,23 +182,24 @@ class Enemy:
     def draw_enemy_bullet(self,screen):
         self.enemybulletManager.draw(screen)
     
-             
+    def animation_shooting(self):
+        pass         
     def draw(self, screen):
-        if self.visible == False:
-            return
+        # if self.visible == False:
+        #     return
 
-        scaled_sprite = pygame.transform.scale(self.image, (int(self.projected_width), int(self.projected_height)))
+        # scaled_sprite = pygame.transform.scale(self.image, (int(self.projected_width), int(self.projected_height)))
 
-        screen.blit(scaled_sprite, (self.screen_x, self.screen_y))
+        # screen.blit(scaled_sprite, (self.screen_x, self.screen_y))
         
+        #//////////////////////////////////////////////////////////////
+        rect_size = 40
         
-        # rect_size = 40
-        
-        # self.enemy_rect = pygame.Rect(self.enemy_x_position- rect_size // 2, self.enemy_y_position- rect_size //2, rect_size,rect_size)
-        # pygame.draw.rect(screen,self.color, self.enemy_rect)
-        # self.direction = (self.enemy_x_position + math.cos(self.angle)*50, self.enemy_y_position + math.sin(self.angle) *50)
+        self.enemy_rect = pygame.Rect(self.enemy_x_position- rect_size // 2, self.enemy_y_position- rect_size //2, rect_size,rect_size)
+        pygame.draw.rect(screen,self.color, self.enemy_rect)
+        self.direction = (self.enemy_x_position + math.cos(self.angle)*50, self.enemy_y_position + math.sin(self.angle) *50)
 
-        # pygame.draw.line(self.game.screen, self.color, (self.enemy_x_position, self.enemy_y_position), self.direction, 2)
+        pygame.draw.line(self.game.screen, self.color, (self.enemy_x_position, self.enemy_y_position), self.direction, 2)
 
     def render(self, screen):
         if self.dead == True:

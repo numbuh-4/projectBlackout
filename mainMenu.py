@@ -130,9 +130,9 @@ class MainMenu:
         retry_rect = text_retry.get_rect(center=(RES_WIDTH/2, 420))
         lead_rect = text_Save_score.get_rect(center=(RES_WIDTH/2, 480))
         died_rect = text_you_died.get_rect(center=(RES_WIDTH/2, 250))
-
+        running = True
         # Draw overlay + options
-        while True:
+        while running:
             self.screen.blit(death_snapshot, (0,0))
             self.screen.blit(text_you_died, died_rect)
             self.screen.blit(text_menu, menu_rect)
@@ -152,7 +152,9 @@ class MainMenu:
                     if menu_rect.collidepoint(mouse):
                         return "menu"
                     if retry_rect.collidepoint(mouse):
+                        running = False
                         return "retry"
+                        
                     if lead_rect.collidepoint(mouse):
                         name = self.save_score_screen()
                         self.dbConnection.saveToLeaderboard(name,final_score,round_died_on)
@@ -215,6 +217,8 @@ class MainMenu:
                 choice = self.game_over_screen(final_score, round_died_on)
                 
                 if choice == "retry":
+                    game = Game()
+                    result, final_score, round_died_on = game.startGame()
                     continue
                 elif choice == "menu":
                     return "menu"
@@ -226,7 +230,7 @@ class MainMenu:
 
         while self.run:
             self.screen.blit(self.scaledBackgroundImage, (0,0))
-            project = self.draw_text("Project", self.font, 100, 90)
+            projcet = self.draw_text("Project", self.font, 100, 90)
             blackout = self.draw_text("BLACKOUT", self.font_blackout, 96, 120)
 
             new_game = self.draw_text("New Game", self.font, 100, 290)

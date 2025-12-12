@@ -26,6 +26,7 @@ class roundSystem:
             
     def updateRound(self):
         all_dead = True
+        all_enemies_list = self.enemies
         for enemy in self.enemies:
             if not enemy.dead:
                 enemy.update_hitbox()
@@ -45,5 +46,5 @@ class roundSystem:
     def draw(self,screen):
         for enemy in self.enemies:
             enemy.render(screen)
-            # enemy.draw_enemy_bullet(screen)
+            enemy.draw_enemy_bullet(screen)
         

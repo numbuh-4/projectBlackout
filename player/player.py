@@ -4,7 +4,7 @@ from settings import *
 from player.weapon import *
 from enemy.enemyBM import *
 class Player:
-    def __init__(self, game, enemyBM, health):
+    def __init__(self, game, enemyBM, health,):
         self.game = game
         self.enemybulletManager = enemyBM
         self.x, self.y = PLAYER_POS[0] * TILESIZE, PLAYER_POS[1] * TILESIZE #coverts the player position from tile coordinates to pixel coordniates
@@ -93,9 +93,14 @@ class Player:
                 # print("hit")
                 self.health.damage_taken()
                 self.enemybulletManager.bullets.remove(bullet)
-                
-                
-                
+            elif self.check_if_enemy_hit_wall(bullet):
+                self.enemybulletManager.bullets.remove(bullet)
+
+    def check_if_enemy_hit_wall(self, bullet):
+        for block_rect in self.game.map.BLOCKS_1:
+            if bullet.bullet_hitbox.colliderect(block_rect):
+                return True # collision happened
+        return False # no collison happend
     def player_update_hitbox(self):
         self.player_hitbox.x = self.x - self.hitbox_size//2
         self.player_hitbox.y = self.y - self.hitbox_size//2

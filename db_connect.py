@@ -73,7 +73,7 @@ class db_connect:
         FROM
             leaderboard
         ORDER BY
-            submission_time DESC
+            score DESC
         LIMIT
             5;
         """
