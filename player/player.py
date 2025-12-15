@@ -23,7 +23,7 @@ class Player:
         cos_a = math.cos(self.angle)
 
         sin_a = math.sin(self.angle)
-        dx, dy = 0, 0
+        dx, dy = 0, 0   
         
         speed = PLAYER_SPEED * self.game.delta_time
         speed_sin = speed * sin_a

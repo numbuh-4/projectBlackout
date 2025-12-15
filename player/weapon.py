@@ -47,14 +47,14 @@ class Weapon:
     
     def damage(self):
         
-        self.hit_sound = pygame.mixer.Sound('resources/sound_effects/hitmarker_2.mp3')
+        # self.hit_sound = pygame.mixer.Sound('resources/sound_effects/hitmarker_2.mp3')
         
         for enemy in self.roundSystem.enemies:
             if enemy.dead:
                 continue
             for bullet in self.bullet_Manager.bullets:
                 if bullet.bullet_hitbox.colliderect(enemy.world_hitbox):
-                    self.hit_sound.play()
+                    # self.hit_sound.play()
                     print("hit")
                     enemy.color = (0,255,0) 
                     enemy.enemy_health()

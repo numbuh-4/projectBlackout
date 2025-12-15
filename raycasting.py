@@ -26,7 +26,7 @@ class RayCasting:
         texture_width = self.wall_texture.get_width() #256
         texture_height = self.wall_texture.get_height() #256
         #this draws the floor 
-        pygame.draw.rect(screen, (50, 50, 50), (0, RES_HEIGHT // 2, RES_WIDTH, RES_HEIGHT // 2))
+        pygame.draw.rect(screen, (110, 108, 97), (0, RES_HEIGHT // 2, RES_WIDTH, RES_HEIGHT // 2))
 
 
         for ray in self.rays:

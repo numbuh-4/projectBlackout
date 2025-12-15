@@ -28,9 +28,9 @@ class roundSystem:
         all_dead = True
         all_enemies_list = self.enemies
         for enemy in self.enemies:
-            if not enemy.dead:
+            if enemy.dead == False:
                 enemy.update_hitbox()
-                enemy.move_towards_player()
+                enemy.move_towards_player(all_enemies_list)
                 enemy.update_enemy_bullet()
             else:
                 if enemy.dead and enemy.points_given == False:
@@ -46,5 +46,5 @@ class roundSystem:
     def draw(self,screen):
         for enemy in self.enemies:
             enemy.render(screen)
-            enemy.draw_enemy_bullet(screen)
+            # enemy.draw_enemy_bullet(screen)
         

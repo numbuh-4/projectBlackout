@@ -37,24 +37,21 @@ class Game:
         self.score = Score(self)
         self.enemyBM = EnemyBM()
         self.crossHair = CrossHair()
-        self.player = Player(self,self.enemyBM, self.health)
+        self.player = Player(self,self.enemyBM, self.health) 
         self.bullet = Bullet(self.player)
         self.bullet_Manager = BulletManager()
-
-        
-        self.roundSystem = roundSystem(self.player,self, self.enemyBM, self.round,self.ammo)
-
+        #self.enemy = enemy()
+        self.roundSystem = roundSystem(self.player,self, self.enemyBM, self.round,self.ammo) 
         self.weapon = Weapon(self.player, self.roundSystem,self.bullet_Manager)
-        
         self.rayCasting = RayCasting(self.player, self.map)
-        self.db_connection = db_connect()
+        self.db_connection = db_connect() 
 
     
     def draw(self):
         self.screen.fill((0, 0, 0))  
-        self.player.draw()
-        # self.rayCasting.render(self.screen) 
-        self.map.draw()
+        # self.player.draw()
+        self.rayCasting.render(self.screen) 
+        # self.map.draw()
 #HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD HUD
 
         self.weapon.render(self.screen)

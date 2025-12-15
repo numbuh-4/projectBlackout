@@ -99,7 +99,23 @@ class Enemy:
                 self.visible = False
                 return
             
-    def move_towards_player(self):
+    def check_overlap(self, all_enemies, new_x, new_y):
+        
+        temp_rect = self.world_hitbox.copy()
+        temp_rect.x = new_x - self.hitbox_size // 2
+        temp_rect.y = new_y - self.hitbox_size // 2
+        
+        for other_enemy in all_enemies:
+            if other_enemy is self or other_enemy.dead:
+                continue
+                
+            if temp_rect.colliderect(other_enemy.world_hitbox):
+                return True
+                
+        return False      
+    
+    
+    def move_towards_player(self, all_enemies):
         if self.dead == True:
             return
         
@@ -127,11 +143,19 @@ class Enemy:
         
         
         
+        # if self.map.has_wall_at(new_x, self.enemy_y_position) == 0:
+        #     self.enemy_x_position = new_x
+
+        # if self.map.has_wall_at(self.enemy_x_position, new_y) == 0:
+        #      self.enemy_y_position = new_y
         if self.map.has_wall_at(new_x, self.enemy_y_position) == 0:
-            self.enemy_x_position = new_x
+            if self.check_overlap(all_enemies, new_x, self.enemy_y_position)== False:
+                self.enemy_x_position = new_x
+
 
         if self.map.has_wall_at(self.enemy_x_position, new_y) == 0:
-             self.enemy_y_position = new_y
+         if  self.check_overlap(all_enemies, self.enemy_x_position, new_y) == False:
+            self.enemy_y_position = new_y
       
 #/////////////////////////////////////////////////////////////////////////////////////////////////////////           
     def enemy_health(self):
@@ -185,21 +209,21 @@ class Enemy:
     def animation_shooting(self):
         pass         
     def draw(self, screen):
-        # if self.visible == False:
-        #     return
+        if self.visible == False:
+            return
 
-        # scaled_sprite = pygame.transform.scale(self.image, (int(self.projected_width), int(self.projected_height)))
+        scaled_sprite = pygame.transform.scale(self.image, (int(self.projected_width), int(self.projected_height)))
 
-        # screen.blit(scaled_sprite, (self.screen_x, self.screen_y))
+        screen.blit(scaled_sprite, (self.screen_x, self.screen_y))
         
         #//////////////////////////////////////////////////////////////
-        rect_size = 40
+        # rect_size = 40
         
-        self.enemy_rect = pygame.Rect(self.enemy_x_position- rect_size // 2, self.enemy_y_position- rect_size //2, rect_size,rect_size)
-        pygame.draw.rect(screen,self.color, self.enemy_rect)
-        self.direction = (self.enemy_x_position + math.cos(self.angle)*50, self.enemy_y_position + math.sin(self.angle) *50)
+        # self.enemy_rect = pygame.Rect(self.enemy_x_position- rect_size // 2, self.enemy_y_position- rect_size //2, rect_size,rect_size)
+        # pygame.draw.rect(screen,self.color, self.enemy_rect)
+        # self.direction = (self.enemy_x_position + math.cos(self.angle)*50, self.enemy_y_position + math.sin(self.angle) *50)
 
-        pygame.draw.line(self.game.screen, self.color, (self.enemy_x_position, self.enemy_y_position), self.direction, 2)
+        # pygame.draw.line(self.game.screen, self.color, (self.enemy_x_position, self.enemy_y_position), self.direction, 2)
 
     def render(self, screen):
         if self.dead == True:
